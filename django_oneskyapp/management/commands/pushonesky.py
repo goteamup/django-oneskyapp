@@ -16,6 +16,8 @@ class Command(management.base.BaseCommand):
         self.execute()
 
     def handle(self, *args, **options):
+        use_underscores = True
+        
         try:
             # Locale path and necessary settings
             locale_path = settings.LOCALE_PATHS[0] if hasattr(settings,"LOCALE_PATHS") and isinstance(settings.LOCALE_PATHS,(list,tuple)) else settings.LOCALE_PATHS if hasattr(settings,"LOCALE_PATHS") else None #os.path.join(settings.BASE_DIR,"locale")
@@ -49,6 +51,9 @@ class Command(management.base.BaseCommand):
                         
                         # language_codes = [language_item[0] for language_item in settings.LANGUAGES]
                         language_codes = [settings.LANGUAGE_CODE] #just upload the source language
+                        
+                        if use_underscores:
+                            language_codes = [l.replace('-','_') for l in language_codes]
                         
                         for language_code in language_codes:
                             # Push each local file

@@ -15,6 +15,8 @@ class Command(management.base.BaseCommand):
 		self.execute()
 
 	def handle(self, *args, **options):
+		use_underscores = True
+		
 		try:
 			# Locale path and necessary settings
 			locale_path = settings.LOCALE_PATHS[0] if hasattr(settings,"LOCALE_PATHS") and isinstance(settings.LOCALE_PATHS,(list,tuple)) else settings.LOCALE_PATHS if hasattr(settings,"LOCALE_PATHS") else None #os.path.join(settings.BASE_DIR,"locale")
@@ -57,8 +59,11 @@ class Command(management.base.BaseCommand):
 				# Pull each translated file
 				for file_name in file_names:
 					for language in project_languages:
-						export_file_name = os.path.join(locale_path, language.get("code","unknown"), "LC_MESSAGES", file_name)
-						if language.get("is_ready_to_publish",None):
+						language_code = language.get('code','unknown')
+						if use_underscores:
+							language_code = language_code.replace('-','_')
+						export_file_name = os.path.join(locale_path, language_code, "LC_MESSAGES", file_name)
+						if True or language.get("is_ready_to_publish",None):
 							status, json_response = client.translation_export(project_id,locale=language.get("code"),source_file_name=file_name,export_file_name=export_file_name)
 							if status == 200:
 								print "Saving translation file %s for #%s." % (json_response.get("filename","-No filename in OneSky response-"), project_id)
