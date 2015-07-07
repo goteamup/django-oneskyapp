@@ -59,7 +59,7 @@ class Command(management.base.BaseCommand):
 				# Pull each translated file
 				for file_name in file_names:
 					for language in project_languages:
-						language_code = language.get('code','unknown')
+						language_code = language.get('custom_locale', None) or language.get('code',None) or 'unknown'
 						if use_underscores:
 							language_code = language_code.replace('-','_')
 						export_file_name = os.path.join(locale_path, language_code, "LC_MESSAGES", file_name)
