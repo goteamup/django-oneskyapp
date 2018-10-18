@@ -13,8 +13,8 @@ class Command(management.base.BaseCommand):
     help = "Updates your .po translation files using makemessages and uploads them to OneSky translation service. Pushes new translation strings from OneSky to your django app and compiles messages."
 
     def run_from_argv(self, argv):
-        self._argv = argv
-        self.execute()
+        self._argv = argv[:]
+        super(Command, self).run_from_argv(argv)
 
     def handle(self, *args, **options):
         use_underscores = True
